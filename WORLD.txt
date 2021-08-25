@@ -1,0 +1,117 @@
+World Challenge SQL
+
+1. Using COUNT, get the number of cities in the USA.
+
+	mysql> SELECT COUNT(*) FROM city WHERE CountryCode = "USA";
+
+
+2. Find out the population and life expectancy for people in Argentina.
+
+	mysql> SELECT population, LifeExpectancy FROM country WHERE Name = "Argentina";
+
+
+3. Using IS NOT NULL, ORDER BY, and LIMIT, which country has the highest life expectancy?
+
+	mysql> SELECT Name, LifeExpectancy 
+		FROM country
+		WHERE LifeExpectancy 
+		IS NOT NULL ORDER BY (LifeExpectancy) DESC;
+
+4. Using JOIN ... ON, find the capital city of Spain.
+
+	
+	mysql> SELECT city.Name FROM city JOIN country ON city.ID = country.Capital WHERE country.Name = "Spain";
+
+
+5. Using JOIN ... ON, list all the languages spoken in the Southeast Asia region.
+
+	mysql> SELECT countryLanguage.Language
+		 FROM countryLanguage 
+		  JOIN country ON countryLanguage.CountryCode=country.Code 
+		WHERE Region='Southeast Asia';
+
+6. Using a single query, list 25 cities around the world that start with the letter F.
+ 	
+	mysql> SELECT Name FROM city WHERE Name LIKE 'F%' LIMIT 25;
+
+
+7. Using COUNT and JOIN ... ON, get the number of cities in China.
+
+	mysql> SELECT country.Name,COUNT(city.ID) 
+	FROM country JOIN city ON country.Code=city.CountryCode 
+	WHERE city.CountryCode='CHN';
+
+8. Using IS NOT NULL, ORDER BY, and LIMIT, which country has the lowest population? Discard non-zero populations.
+	
+*	mysql> select Name,Population from country 
+	where Population is not null 
+	and 
+	Population != 0 
+	order by Population asc limit 1;
+
+9. Using aggregate functions, return the number of countries the database contains.
+
+	mysql> SELECT COUNT(Name) FROM country;
+
+
+10. What are the top ten largest countries by area?
+
+	mysql> SELECT Name, SurfaceArea FROM country ORDER BY SurfaceArea DESC LIMIT 10;
+
+
+11. List the five largest cities by population in Japan.
+	
+	mysql> SELECT Name, Population FROM city WHERE CountryCode = "JPN" 
+		ORDER BY Population DESC LIMIT 5;
+	
+
+12. List the names and country codes of every country with Elizabeth II as its Head of State. You will need to fix the mistake first!
+	 	
+	mysql> UPDATE country SET HeadOfState = replace(HeadOfState, "Elisabeth II", "Elizabeth II");	
+	mysql> SELECT Code, Name FROM country WHERE HeadOfState = "Elizabeth II";
+	
+
+13. List the top ten countries with the smallest population-to-area ratio. Discard any countries with a ratio of 0.
+	
+	mysql> SELECT Name FROM country WHERE Population/SurfaceArea > 0 
+	ORDER BY Population/SurfaceArea ASC LIMIT 10;
+
+14. List every unique world language.
+
+	
+	mysql> SELECT DISTINCT Language FROM countrylanguage;
+
+
+15. List the names and GNP of the world's top 10 richest countries.
+	
+	mysql> SELECT Name, GNP FROM country ORDER BY GNP DESC LIMIT 10;
+	
+
+16. List the names of, and number of languages spoken by, the top ten most multilingual countries.
+
+	
+	mysql> SELECT country.Name,COUNT(countrylanguage.Language) as NoOfLang FROM country
+ 	JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
+	GROUP BY country.Name 
+	ORDER BY NoOfLang desc limit 10;
+
+
+17. List every country where over 50% of its population can speak German.
+
+*	mysql> SELECT Language,CountryCode FROM countrylanguage WHERE Language = "German" AND Percentage>50;
+
+
+18. Which country has the worst life expectancy? Discard zero or null values.
+	
+	mysql> SELECT Name, LifeExpectancy FROM country WHERE LifeExpectancy IS NOT NULL ORDER BY LifeExpectancy ASC Limit 1;
+	
+
+19. List the top three most common government forms.
+
+	mysql> SELECT GovernmentForm,
+	 COUNT(GovernmentForm) as Forms FROM country
+	 GROUP BY GovernmentForm ORDER BY Forms DESC LIMIT 3;
+
+20. How many countries have gained independence since records began?
+
+	mysql> SELECT COUNT(IndepYear) FROM country WHERE IndepYear IS NOT NULL;
